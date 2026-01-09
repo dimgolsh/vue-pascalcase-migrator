@@ -15,7 +15,7 @@ const VITE_CONFIG_NAMES = [
 /**
  * Find vite.config file in a specific directory (non-recursive)
  */
-export function findViteConfigInDir(dir: string): string | null {
+function findViteConfigInDir(dir: string): string | null {
 	for (const name of VITE_CONFIG_NAMES) {
 		const configPath = path.join(dir, name);
 		if (fs.existsSync(configPath)) {
@@ -47,7 +47,7 @@ export function findViteConfig(startDir: string): string | null {
 
 /**
  * Find project root by locating vite.config file
- * Returns the directory containing vite.config, or cwd if not found
+ * Returns the directory containing vite.config, or startDir if not found
  */
 export function findProjectRoot(startDir: string): string {
 	const configPath = findViteConfig(startDir);
@@ -118,7 +118,7 @@ export function parseAliasesFromConfig(configContent: string, projectRoot: strin
  * Load aliases from vite.config file
  */
 export function loadViteAliases(projectRoot: string): PathAliases | null {
-	const configPath = findViteConfigInDir(projectRoot);
+	const configPath = findViteConfig(projectRoot);
 	if (!configPath) {
 		return null;
 	}

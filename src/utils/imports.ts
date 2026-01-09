@@ -1,5 +1,7 @@
 import { Project } from 'ts-morph';
 import * as path from 'path';
+import * as fs from 'fs';
+import { glob } from 'glob';
 
 export interface RenameMapping {
 	oldPath: string;
@@ -237,4 +239,91 @@ export function applyImportUpdates(project: Project, updates: ImportUpdate[]): v
 			}
 		}
 	}
+}
+
+/**
+ * Escape special regex characters in a string
+ */
+function escapeRegex(str: string): string {
+	return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
+ * Update imports in a single file using regex (works for .vue, .ts, .js files)
+ * Returns the number of replacements made
+ */
+export function updateImportsInFile(filePath: string, mappings: RenameMapping[]): number {
+	if (!fs.existsSync(filePath)) return 0;
+
+	let content = fs.readFileSync(filePath, 'utf-8');
+	let replacements = 0;
+
+	for (const mapping of mappings) {
+		// Pattern to match imports with the old filename
+		// Matches: from 'path/old-name.vue' or from "path/old-name.vue"
+		const fromPattern = new RegExp(
+			`(from\\s+['"][^'"]*?)${escapeRegex(mapping.oldName)}(['"])`,
+			'g',
+		);
+
+		// Pattern to match dynamic imports: import('path/old-name.vue')
+		const dynamicPattern = new RegExp(
+			`(import\\s*\\(\\s*['"][^'"]*?)${escapeRegex(mapping.oldName)}(['"]\\s*\\))`,
+			'g',
+		);
+
+		const newContent = content
+			.replace(fromPattern, (match, prefix, suffix) => {
+				replacements++;
+				return `${prefix}${mapping.newName}${suffix}`;
+			})
+			.replace(dynamicPattern, (match, prefix, suffix) => {
+				replacements++;
+				return `${prefix}${mapping.newName}${suffix}`;
+			});
+
+		content = newContent;
+	}
+
+	if (replacements > 0) {
+		fs.writeFileSync(filePath, content, 'utf-8');
+	}
+
+	return replacements;
+}
+
+/**
+ * Update imports in renamed files (second pass after renaming)
+ * This ensures imports inside renamed files are also updated
+ */
+export async function updateImportsInRenamedFiles(
+	mappings: RenameMapping[],
+	frontendDir: string,
+): Promise<ImportUpdate[]> {
+	const updates: ImportUpdate[] = [];
+	const extensions = ['ts', 'vue', 'tsx', 'js', 'jsx'];
+
+	// Scan all files in the frontend directory
+	const files = await glob(`**/*.{${extensions.join(',')}}`, {
+		cwd: frontendDir,
+		absolute: true,
+		ignore: ['**/node_modules/**', '**/dist/**', '**/.git/**'],
+	});
+
+	for (const filePath of files) {
+		const replacements = updateImportsInFile(filePath, mappings);
+		if (replacements > 0) {
+			// Log what was updated (simplified - just count)
+			for (const mapping of mappings) {
+				updates.push({
+					file: filePath,
+					oldImport: mapping.oldName,
+					newImport: mapping.newName,
+					line: 0, // Line number not available with regex
+				});
+			}
+		}
+	}
+
+	return updates;
 }

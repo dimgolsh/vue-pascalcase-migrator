@@ -194,23 +194,9 @@ import {
   saveReport,         // Save report to file
   DEFAULT_ALIASES,    // Default path aliases: { '@': 'src', '~': 'src' }
   loadViteAliases,    // Load aliases from vite.config
-  findViteConfig,     // Find vite.config file (recursive parent search)
-  findProjectRoot,    // Find project root by locating vite.config
+  findViteConfig,     // Find vite.config file
   getProjectAliases,  // Get aliases (auto-detect + defaults)
 } from 'vue-pascalcase-migrator';
-```
-
-### Automatic Project Root Detection
-
-The tool **automatically finds your project root** by searching for `vite.config.ts` or `vite.config.js` up the directory tree. This means you can run the command from any subdirectory:
-
-```bash
-# Running from a deep subdirectory
-cd /project/frontend/src/components/deep/folder
-vpm rename -d .
-
-# The tool will find vite.config.ts in /project/frontend/
-# and use that as the project root for resolving imports
 ```
 
 ### Path Aliases

@@ -36,7 +36,7 @@ export { toPascalCase, isKebabCase } from './utils/naming.js';
 export { findImportUpdates, applyImportUpdates, DEFAULT_ALIASES } from './utils/imports.js';
 export { countFileLines, getFileSize, formatBytes } from './utils/files.js';
 export { generateHtmlReport, saveReport } from './utils/report.js';
-export { loadViteAliases, findViteConfig, getProjectAliases, findProjectRoot } from './utils/vite-config.js';
+export { loadViteAliases, findViteConfig, getProjectAliases } from './utils/vite-config.js';
 
 /**
  * Default file extensions to scan for imports

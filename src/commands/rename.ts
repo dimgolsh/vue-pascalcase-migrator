@@ -7,9 +7,9 @@ import { execSync } from 'child_process';
 import chalk from 'chalk';
 import ora, { type Ora } from 'ora';
 
-import { getProjectRoot, getFrontendDir, FILE_EXTENSIONS } from '../utils/paths.js';
+import { FILE_EXTENSIONS } from '../utils/paths.js';
 import { toPascalCase, isKebabCase } from '../utils/naming.js';
-import { RenameMapping, ImportUpdate, DEFAULT_ALIASES, findImportUpdates, applyImportUpdates } from '../utils/imports.js';
+import { RenameMapping, ImportUpdate, DEFAULT_ALIASES, findImportUpdates, applyImportUpdates, updateImportsInRenamedFiles } from '../utils/imports.js';
 import { countFileLines, getFileSize, formatBytes } from '../utils/files.js';
 import { FileStats, ReportData, saveReport } from '../utils/report.js';
 import { getProjectAliases, findViteConfig, findProjectRoot } from '../utils/vite-config.js';
@@ -247,11 +247,26 @@ async function executeRename(options: RenameOptions): Promise<void> {
 
 		applyImportUpdates(project, importUpdates);
 		await project.save();
-		updateSpinner.succeed('Imports updated');
+		updateSpinner.succeed('Imports updated in non-Vue files');
 
 		console.log('');
 		console.log(chalk.blue('📝 Renaming files...'));
 		renameFiles(mappings, false);
+
+		// Second pass: update imports in ALL files (including renamed .vue files)
+		const secondPassSpinner = ora({
+			text: 'Updating imports in renamed files...',
+			color: 'green',
+		}).start();
+
+		const secondPassUpdates = await updateImportsInRenamedFiles(mappings, frontendDir);
+		const additionalUpdates = secondPassUpdates.length;
+
+		if (additionalUpdates > 0) {
+			secondPassSpinner.succeed(`Updated imports in ${chalk.bold.green(additionalUpdates)} additional files`);
+		} else {
+			secondPassSpinner.succeed('No additional imports to update');
+		}
 
 		// Generate report
 		if (generateReport) {
