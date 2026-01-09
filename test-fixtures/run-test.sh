@@ -6,10 +6,12 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
-TEST_DIR="/tmp/vue-pascalcase-test-$$"
+TEST_DIR="$SCRIPT_DIR/tmp/test-$$"
 
 echo "📁 Копирование тестового проекта в $TEST_DIR..."
-cp -r "$SCRIPT_DIR/basic-project" "$TEST_DIR"
+rm -rf "$SCRIPT_DIR/tmp"
+mkdir -p "$TEST_DIR"
+cp -r "$SCRIPT_DIR/basic-project/"* "$TEST_DIR/"
 cd "$TEST_DIR"
 
 echo "📝 Инициализация git..."
