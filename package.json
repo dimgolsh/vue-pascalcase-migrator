@@ -1,0 +1,74 @@
+{
+	"name": "vue-pascalcase-migrator",
+	"version": "1.0.0",
+	"description": "CLI tool and API to rename Vue component files from kebab-case to PascalCase and automatically update imports",
+	"author": "Dmitriy <dimgolsh@gmail.com> (https://github.com/dimgolsh)",
+	"license": "MIT",
+	"type": "module",
+	"main": "./dist/api.js",
+	"module": "./dist/api.js",
+	"types": "./dist/api.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/api.d.ts",
+			"import": "./dist/api.js"
+		},
+		"./cli": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		}
+	},
+	"bin": {
+		"vue-pascalcase-migrator": "./dist/index.js",
+		"vpm": "./dist/index.js"
+	},
+	"files": [
+		"dist",
+		"README.md",
+		"LICENSE"
+	],
+	"keywords": [
+		"vue",
+		"vue3",
+		"rename",
+		"refactor",
+		"kebab-case",
+		"PascalCase",
+		"component",
+		"migration",
+		"cli",
+		"codemod",
+		"imports"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/dimgolsh/vue-pascalcase-migrator.git"
+	},
+	"bugs": {
+		"url": "https://github.com/dimgolsh/vue-pascalcase-migrator/issues"
+	},
+	"homepage": "https://github.com/dimgolsh/vue-pascalcase-migrator#readme",
+	"engines": {
+		"node": ">=18.0.0"
+	},
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsx src/index.ts",
+		"rename": "tsx src/index.ts rename",
+		"rename:diff": "tsx src/index.ts rename:diff",
+		"prepublishOnly": "npm run build",
+		"clean": "rm -rf dist"
+	},
+	"dependencies": {
+		"chalk": "^5.4.1",
+		"commander": "^12.1.0",
+		"glob": "^11.0.0",
+		"ora": "^9.0.0",
+		"ts-morph": "^24.0.0"
+	},
+	"devDependencies": {
+		"@types/node": "^22.0.0",
+		"tsx": "^4.19.0",
+		"typescript": "^5.7.3"
+	}
+}

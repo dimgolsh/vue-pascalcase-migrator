@@ -1,0 +1,30 @@
+# Source files
+src/
+
+# Config files
+tsconfig.json
+.gitignore
+.editorconfig
+.prettierrc
+.eslintrc*
+
+# Development
+node_modules/
+*.log
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Tests
+__tests__/
+*.test.ts
+*.spec.ts
+coverage/
+
+# Reports
+*.html
+rename-report-*.html
