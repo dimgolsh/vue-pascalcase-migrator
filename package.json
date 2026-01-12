@@ -1,6 +1,6 @@
 {
 	"name": "vue-pascalcase-migrator",
-	"version": "3.0.0",
+	"version": "1.0.0",
 	"description": "CLI tool and API to rename Vue component files from kebab-case to PascalCase and automatically update imports",
 	"author": "Dmitriy <dimgolsh@gmail.com> (https://github.com/dimgolsh)",
 	"license": "MIT",
@@ -57,7 +57,7 @@
 		"rename": "tsx src/index.ts rename",
 		"rename:diff": "tsx src/index.ts rename:diff",
 		"prepublishOnly": "npm run build",
-		"publish:major": "npm run build && npm version major && npm publish",
+		"publish:patch": "npm run build && npm version patch && npm publish",
 		"clean": "rm -rf dist"
 	},
 	"dependencies": {
