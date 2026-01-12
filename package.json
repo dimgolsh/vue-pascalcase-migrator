@@ -57,6 +57,7 @@
 		"rename": "tsx src/index.ts rename",
 		"rename:diff": "tsx src/index.ts rename:diff",
 		"prepublishOnly": "npm run build",
+		"publish:major": "npm run build && npm version major && npm publish",
 		"clean": "rm -rf dist"
 	},
 	"dependencies": {
