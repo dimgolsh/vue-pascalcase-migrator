@@ -17,8 +17,7 @@ import { getProjectAliases, findViteConfig, findProjectRoot } from '../utils/vit
 /**
  * Find all .vue files with kebab-case names in target directory
  */
-async function findKebabCaseFiles(targetDir: string, projectRoot: string): Promise<RenameMapping[]> {
-	const absoluteTargetDir = path.resolve(projectRoot, targetDir);
+async function findKebabCaseFiles(absoluteTargetDir: string): Promise<RenameMapping[]> {
 	const vueFiles = await glob('**/*.vue', {
 		cwd: absoluteTargetDir,
 		absolute: true,
@@ -155,6 +154,7 @@ async function executeRename(options: RenameOptions): Promise<void> {
 	console.log(chalk.gray('═'.repeat(50)));
 	console.log('');
 	console.log(chalk.gray(`   Project root: ${projectRoot}`));
+	console.log(chalk.gray(`   Target dir:   ${absoluteTargetDir}`));
 	console.log('');
 
 	if (dryRun) {
@@ -168,7 +168,7 @@ async function executeRename(options: RenameOptions): Promise<void> {
 		color: 'cyan',
 	}).start();
 
-	const mappings = await findKebabCaseFiles(targetDir, projectRoot);
+	const mappings = await findKebabCaseFiles(absoluteTargetDir);
 
 	if (mappings.length === 0) {
 		scanSpinner.succeed(chalk.green('No kebab-case Vue files found. Nothing to rename.'));
